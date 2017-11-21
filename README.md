@@ -6,13 +6,16 @@ A place to store information for the tensor discussions and possible specificati
 This is an initial proposal for a mixed-precision tensor contraction interface:
 
     /**
-     * \brief This routine computes the tensor contraction C = alpha * A * B + beta * C
+     * \brief This routine computes the tensor contraction C = alpha * op(A) * op(B) + beta * op(C)
      *
-     * \f[ \mathcal{C}_{\text{modes}_\mathcal{C}} \gets \alpha * \mathcal{A}_{\text{modes}_\mathcal{A}} B_{\text{modes}_\mathcal{B}} + \beta \mathcal{C}_{\text{modes}_\mathcal{C}}. \f]
-    
+     * \f[ \mathcal{C}_{\text{modes}_\mathcal{C}} \gets \alpha * op(\mathcal{A}_{\text{modes}_\mathcal{A}}) op(B_{\text{modes}_\mathcal{B}}) + \beta op(\mathcal{C}_{\text{modes}_\mathcal{C}}), \f]
+     * where op(X) = X or op(X) = complex conjugate(X).
+     *
+     *
      * \param[in] alpha Scaling for A*B (dataType is determined by 'typeA')
      * \param[in] A Pointer to the data corresponding to A (data type is determined by 'typeA')
      * \param[in] typeA Datatype of A. This values could be TYPE_SINGLE, TYPE_DOUBLE, TYPE_COMPLEX, or TYPE_DOUBLE_COMPLEX
+     * \param[in] conjA Indicates if the entries of A should be conjucated (only applies to complex types)
      * \param[in] orderA Order of A
      * \param[in] sizeA Array with 'orderA' values that represents the size of A (e.g., sizeA[] = {4,8,12} represents an order-3 tensor of size 4x8x12).
      * \param[in] strideA Array with 'orderA' values that represents the strides of
@@ -23,12 +26,14 @@ This is an initial proposal for a mixed-precision tensor contraction interface:
      * \param[in] modeA Array with 'orderA' values that represent the modes of A.
      * \param[in] B Pointer to the data corresponding to B (data type is determined by 'typeB')
      * \param[in] typeB Datatype of B (see typeA)
+     * \param[in] conjB Indicates if the entries of B should be conjucated (only applies to complex types)
      * \param[in] orderB Order of B
      * \param[in] sizeB Array with 'orderB' values that represents the size of B.
      * \param[in] strideB Array with 'orderB' values that represents the strides of B with respect to each mode (see strideA).
      * \param[in] beta Scaling for C (dataType is determined by 'typeC')
      * \param[in,out] C Pointer to the data corresponding to C (data type is determined by 'typeC')
      * \param[in] typeC Datatype of C (see typeA)
+     * \param[in] conjC Indicates if the initial entries of C should be conjucated (only applies to complex types)
      * \param[in] orderC Order of C
      * \param[in] sizeC Array with 'orderC' values that represents the size of C.
      * \param[in] strideC Array with 'orderC' values that represents the strides of C with respect to each mode (see strideA).
@@ -54,15 +59,15 @@ This is an initial proposal for a mixed-precision tensor contraction interface:
      * int orderA = 4;
      * int orderB = 4;
      * int orderC = 4;
-     * DataType typeA = TYPE_DOUBLE;
-     * DataType typeB = TYPE_DOUBLE;
-     * DataType typeC = TYPE_DOUBLE;
+     * dataType typeA = TYPE_DOUBLE;
+     * dataType typeB = TYPE_DOUBLE;
+     * dataType typeC = TYPE_DOUBLE;
      *
-     * tensorMult(&alpha, A, typeA, orderA, sizeA, NULL, modeA, 
-     *                    B, typeB, orderB, sizeB, NULL, modeB, 
-     *            &beta,  C, typeC, orderC, sizeC, NULL, modeC);
+     * tensorMult(&alpha, A, typeA, false, orderA, sizeA, NULL, modeA, 
+     *                    B, typeB, false, orderB, sizeB, NULL, modeB, 
+     *            &beta,  C, typeC, false, orderC, sizeC, NULL, modeC);
      *
      */
-    void tensorMult(const void* alpha, const void *A, dataType typeA, int orderA, const long *sizeA, const long *strideA, const int* modeA,
-                                       const void *B, dataType typeB, int orderB, const long *sizeB, const long *strideB, const int* modeB,
-                    const void* beta,        void *C, dataType typeC, int orderC, const long *sizeC, const long *strideC, const int* modeC);
+    void tensorMult(const void* alpha, const void *A, dataType typeA, bool conjA, int orderA, const long *sizeA, const long *strideA, const int* modeA,
+                                       const void *B, dataType typeB, bool conjB, int orderB, const long *sizeB, const long *strideB, const int* modeB,
+                    const void* beta,        void *C, dataType typeC, bool conjC, int orderC, const long *sizeC, const long *strideC, const int* modeC);
