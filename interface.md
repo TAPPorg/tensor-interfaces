@@ -42,7 +42,7 @@
   
 ## "Plans"
   
-Paul Spring incorporates the notion of a "plan" in [HPTT](https://github.com/springer13/hptt), similar to how it is used in e.g. FFTW. The basic idea is that instead of just calling an interface function, one creates an object for the operation. This object can then be executed (possibly more than once) and maniuplated to change the operation parameters.
+Paul Springer incorporates the notion of a "plan" in [HPTT](https://github.com/springer13/hptt), similar to how it is used in e.g. FFTW. The basic idea is that instead of just calling an interface function, one creates an object for the operation. This object can then be executed (possibly more than once) and maniuplated to change the operation parameters.
   
 Examples of why this is helpful:
   - Reducing overhead by calling the object multiple times with different pointers
