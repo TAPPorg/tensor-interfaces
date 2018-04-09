@@ -2,9 +2,9 @@
 
 ## Tensor
 
-A **dense tensor** is a multi-dimensional array of (usually) arithmetic values. A tensor has a non-negative [positive? are scalars OK?] number of **dimensions** [or **modes**, **ways**, etc.?]. Each **dimension** has a non-negative [positive?] **length**. As an example, consider a 4-dimensional tensor *A* with real elements and dimension lengths 4, 5, 9, and 3:
+A **dense tensor** is a multi-dimensional array of arithmetic values. A tensor has a positive number, *n*, of **modes**  (i.e. it is an *n*-mode tensor).<sup>[1](#foot1)</sup> Each **mode** has a non-negative **extent**<sup>[2](#foot2)</sup>, which is the number of distinct values that the mode can have. As an example, consider a 4-mode tensor *A* with real elements and extents of 4, 5, 9, and 3:
 
-![](https://latex.codecogs.com/gif.latex?%5Cmathcal%7BA%7D%20%5Cin%20%5Cmathbb%7BR%7D%5E%7B4%20%5Cotimes%205%20%5Cotimes%209%20%5Cotimes%203%7D)
+![](https://latex.codecogs.com/gif.latex?\mathcal{A}\in{}\mathbb{R}^{4\otimes{}5\otimes9{}\otimes{}3})
 
 In a programming language such as C, this would correspond to:
 
@@ -14,61 +14,68 @@ double A[4][5][9][3];
 
 (or `float`, etc.).
 
+<a name="foot1">1</a>) Also: *n*-dimensional, *n*-way, order-*n*, *n*-ary, rank-*n*, *n*-adic, *n*-fold, *n*-index, *n* subspaces.
+
+<a name="foot2">2</a>) Also: length, dimension, size.
+
 ## Indexing
 
-Individual tensor elements are referred to by **indexing**. A *d*-dimensional tensor is indexed by *d* [not necessarily distinct?] **symbols**. Each symbol may take on a definite integral value in the range `[0,n)` [can we agree on 0-based indexing?], where *n* is the length of the dimension being indexed. If a symbol appears multiple times then it takes on the same value in each case. For example, we may refer to elements of the tensor *A* above using symbols *i*, *j*, *k*, and *l*:
+Individual tensor elements are referred to by **indexing**. A *d*-mode tensor is indexed by *d* **indices**.<sup>[3](#foot3)</sup> Each index may take on a definite integral value in the range `[0,n)`,<sup>[4](#foot4)</sup> where *n* is the extent of the mode being indexed. If an index appears multiple times then it takes on the same value in each case. For example, we may refer to elements of the tensor *A* above using symbols *i*, *j*, *k*, and *l*:
 
-![](https://latex.codecogs.com/gif.latex?%5Cmathcal%7BA%7D_%7Bijkl%7D%20%5Cin%20%5Cmathbb%7BR%7D)
+![](https://latex.codecogs.com/gif.latex?\mathcal{A}_{ijkl}\in{}\mathbb{R})
 
 In this case it must be that `0 <= i < 4`, `0 <= j < 5`, `0 <= k < 9`, and `0 <= l < 3`.
 
+<a name="foot3">3</a>) Also: labels, symbols.
+
+<a name="foot4">4</a>) 0-based (C-style) indexing is used here, but 1-based index (Fortran- or Matlab-style) is also possible. The distinction between the two is only relevant when referencing a single element of sub-range of elements. Operations such as tensor contraction do not generally need to explicitly depend on any indexing method.
+
 ## Shape
 
-A tensor **shape** is an ordered set of non-negative integers. The *i*th entry, `shape[i]`, gives the length of the *i*th dimension of the tensor. The shape of a particular tensor *A* is denoted `shape_A`. Dimension *i* in tensor *A* is **compatible** with dimension *j* in tensor *B* if `shape_A[i] == shape_B[j]`. *Only compatible dimensions may share the same indexing symbol* [is this always necessary?].
+A tensor **shape**<sup>[5](#foot5)</sup> is an ordered set of non-negative integers. The *i*th entry, `shape[i]`, gives the extent of the *i*th mode of the tensor. The shape of a particular tensor *A* is denoted `shape_A`. Mode *i* in tensor *A* is **compatible** with mode *j* in tensor *B* if `shape_A[i] == shape_B[j]`. Only compatible dimensions may share the same index.
+
+<a name="foot5">5</a>) Also: size, structure.
 
 ## Layout
 
-When the values of a tensor are placed in a linear storage medium (e.g. main memory), additional information is necessary to map values referred to by indices to linear locations. A tensor **layout** is such a map from *d* indices to a linear location [should the layout only be defined on the ranges of the tensor dimensions?]:
+When the values of a tensor are placed in a linear storage medium (e.g. main memory), additional information is necessary to map values referred to by indices to linear locations. A tensor **layout** for a *d*-mode tensor is such a map from *d* indices to a linear location:
 
-![](https://latex.codecogs.com/gif.latex?%5Cmathrm%7Blayout%7D%20%5C%2C%5Ccolon%20%5Cmathbb%7BN%7D%5Ed%20%5Cto%20%5Cmathbb%7BN%7D)
+![](https://latex.codecogs.com/gif.latex?\mathrm{layout}\\,\colon\mathbb{N}^d\to\mathbb{N})
 
 The most useful layout for dense tensors is the **general stride** layout:
 
-![](https://latex.codecogs.com/gif.latex?%5Cmathrm%7Blayout%7D%20%5C%2C%5Ccolon%20%28i_0%2C%5Cldots%2Ci_%7Bd-1%7D%29%20%5Cmapsto%20%5Csum_%7Bk%3D0%7D%5E%7Bd-l%7D%20s_k%20%5Ccdot%20i_k)
+![](https://latex.codecogs.com/gif.latex?\mathrm{layout}\\,\colon(i_0,\ldots,i_{d-1})\mapsto\sum_{k=0}^{d-1}i_k\cdot{s_k})
 
-The ordered set of *s* values is the **stride** of the tensor, denoted for soe tensor *A* by `stride_A`. There are two special cases of the general stride layout of importance: the **column-major** layout and the **row-major** layout. These are defined by:
+The ordered set of *s* values is the **stride**<sup>[6](#foot6)</sup> of the tensor, denoted for some tensor *A* by `stride_A`. In general a stride value may be negative, but the strides must obey the condition that no two elements with distinct indices share the same linear location. There are two special cases of the general stride layout of importance: the **column-major** layout and the **row-major** layout. These are defined by:
 
-![](https://latex.codecogs.com/gif.latex?%5Cbegin%7Balign*%7D%20%5Cmathrm%7Blayout_%7Bcol%7D%7D%20%5C%2C%5Ccolon%20%28i_0%2C%5Cldots%2Ci_%7Bd-1%7D%29%20%5Cmapsto%20%26%20%5Csum_%7Bk%3D0%7D%20i_k%20%5Cprod_%7Bl%3D0%7D%5E%7Bk-1%7D%20n_l%20%5C%5C%20%5Cmathrm%7Blayout_%7Brow%7D%7D%20%5C%2C%5Ccolon%20%28i_0%2C%5Cldots%2Ci_%7Bd-1%7D%29%20%5Cmapsto%20%26%20%5Csum_%7Bk%3D0%7D%20i_k%20%5Cprod_%7Bl%3Dk&plus;1%7D%5E%7Bd-1%7D%20n_l%20%5Cend%7Balign*%7D)
+![](https://latex.codecogs.com/gif.latex?\begin{align*}\mathrm{layout_{col}}\\,\colon(i_0,\ldots,i_{d-1})\mapsto{}&\sum_{k=0}^{d-1}i_k\prod_{l=0}^{k-1}n_l\\\\{}\mathrm{layout_{row}}\\,\colon(i_0,\ldots,i_{d-1})\mapsto{}&\sum_{k=0}^{d-1}i_k\prod_{l=k+1}^{d-1}n_l\end{align*})
 
-where *n* are the dimension lengths of the tensor. Since these layouts depend only on the tensor shape, an additional stride vector is not required.
+where *n* are the extents of the tensor. Since these layouts depend only on the tensor shape, an additional stride vector is not required.
+
+<a name="foot6">6</a>) Also: shape, leading dimension (similar but not identical idea).
 
 ## Tensor Specification
 
 A tensor *A* is fully specified by:
 
-1. Its dimensionality `ndim_A`.
+1. Its number of modes `nmode_A`.
 2. Its shape `shape_A`.
 3. Its layout (restricting ourselves to general stride layouts) `stride_A`, or an assumption of column- or row-major storage.
-4. A pointer to the origin element `A`.
+4. A pointer to the origin element `A`. This is the location of ![](https://latex.codecogs.com/gif.latex?\mathcal{A}_{0\ldots{}0}).
 5. Its data type (real, complex, precision, etc.), unless assumed from the context.
 
 ## Other Terms
 
-The **size** of a tensor is the number of elements, given by the product of the dimension lengths. The **span** of a tensor is the difference between the lowest and highest linear location over all elements, plus one. In a general stride layout this is given by: 
+The **size**<sup>[7](#foot7)</sup> of a tensor is the number of elements, given by the product of the extents. The **span**<sup>[8](#foot8)</sup> of a tensor is the difference between the lowest and highest linear location over all elements, plus one. In a general stride layout this is given by: 
 
-![](https://latex.codecogs.com/gif.latex?%5Cmathrm%7Bspan%7D%20%3D%201&plus;%5Csum_%7Bi%3D0%7D%5E%7Bd-1%7D%20%28n_i-1%29%5Ccdot%20%7Cs_i%7C)
+![](https://latex.codecogs.com/gif.latex?\mathrm{span}=1+\sum_{i=0}^{d-1}(n_i-1)\cdot|s_i|)
 
-A tensor is **contiguous** if its span is equal to its size. Two dimensions *i* and *j* are **sequentially contiguous** if `stride[j] == stride[i]*shape[i]` (note this requires `stride[j] >= stride[i]` and means that sequential contiguity is not commutative). An ordered set of dimensions are sequentially contiguous if each consecutive pair of dimensions is sequentially contiguous.
+A tensor is **contiguous** if its span is equal to its size. The *i*th and *j*th modes are **sequentially contiguous** if `stride[j] == stride[i]*shape[i]` (note this requires `stride[j] >= stride[i]` and means that sequential contiguity is not commutative). An ordered set of modes is sequentially contiguous if each consecutive pair of modes is sequentially contiguous.
 
-A sequentially contiguous set of dimensions may be replaced (**folded**) by a single dimension whose length is equal to the product of the lengths of the original dimensions, and whose stride is equal to the smallest stride of the original dimensions. The tensor formed from folding contains the same elements at the same linear locations as the original. A contiguous tensor may always be folded to a vector (or in general to a tensor of any lower dimensionality).
+A sequentially contiguous set of modes may be replaced (**folded**<sup>[9](#foot9)</sup>) by a single mode whose extent is equal to the product of the extents of the original modes, and whose stride is equal to the smallest stride of the original modes. The tensor formed from folding contains the same elements at the same linear locations as the original. A contiguous tensor may always be folded to a vector (or in general to a tensor with any fewer number of modes).
 
-### Issues
+<a name="foot7">7</a>) Also: length.
 
-- Do strides have to be positive? Can they be 0?
-- Even if strides can't be 0 or negative, do elements have to be unique? Does it depend on whether you're writing or reading?
-- Is the origin element the (0,...,0) element or the "bottom-left" (lowest-address) element if strides can be negative?
-- Does anyone care about layouts other than general stride?
-- What about complex: do we need an "imaginary stride"?
-- Do strides need to be in units of the data type size? Esp. what about complex?
-- Ditto for types like double-double.
-- Other structures beyond dense.
+<a name="foot8">8</a>) Also: extent.
+
+<a name="foot9">9</a>) Also: linearized, unfolded (confusingly).
