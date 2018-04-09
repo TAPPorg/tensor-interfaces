@@ -20,7 +20,7 @@ double A[4][5][9][3];
 
 ## Indexing
 
-Individual tensor elements are referred to by **indexing**. A *d*-mode tensor is indexed by *d* **indices**.<sup>[3](#foot3)</sup> Each index may take on a definite integral value in the range `[0,n)`,<sup>[4](#foot4)</sup> where *n* is the extent of the mode being indexed. If an index appears multiple times then it takes on the same value in each case. For example, we may refer to elements of the tensor *A* above using symbols *i*, *j*, *k*, and *l*:
+Individual tensor elements are referred to by **indexing**. A *d*-mode tensor is indexed by *d* **indices**.<sup>[3](#foot3)</sup> Each index may take on a definite integral value in the range `[0,n)`,<sup>[4](#foot4)</sup> where *n* is the extent of the mode being indexed. If an index appears multiple times then it takes on the same value in each case. For example, we may refer to elements of the tensor *A* above using indices *i*, *j*, *k*, and *l*:
 
 ![](https://latex.codecogs.com/gif.latex?\mathcal{A}_{ijkl}\in{}\mathbb{R})
 
