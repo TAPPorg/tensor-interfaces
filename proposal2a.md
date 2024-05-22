@@ -30,7 +30,7 @@ typedef enum
 Enumerations for the supported storage and computational datatypes. Not all combinations are required to be supported.
 
 ```C
-typedef /* unspecified */ XXX_error; // Should be a trivial type
+typedef /* unspecified */ XXX_error; // Should be a trivial type, e.g. "int"
 
 int XXX_error_check(XXX_error err); // return non-zero on error
 
@@ -41,7 +41,7 @@ void XXX_error_clear(XXX_error err);
 Error handling --- implementation defined.
 
 ```C
-typedef /* unspecified */ XXX_attr; // Requires initialization
+typedef /* unspecified */ XXX_attr; // Requires initialization. E.g. "struct XXX_attr_internal*"
 typedef int32_t XXX_key; // Some values should be reserved for standardization
 
 XXX_error XXX_attr_init(XXX_attr* attr);
