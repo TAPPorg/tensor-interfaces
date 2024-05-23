@@ -105,7 +105,7 @@ XXX_contract(const void*             alpha,
              const XXX_extent*       shape_D,
              const XXX_stride*       stride_D,
              const XXX_index*        idx_D,
-                   XXX_comp_datatype comp_type,
-                   XXX_attr          attr);
+                   XXX_datatype      comp_type,
+                   XXX_attr*         attr);
 ```
 
