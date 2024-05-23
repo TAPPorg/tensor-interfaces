@@ -34,7 +34,10 @@ enum XXX_ERROR {
 // The error explain function should not allocate the error string itself
 // for security concerns.
 // Adapted from the function MPI_Error_string
-XXX_ERROR XXX_error_explain(XXX_ERROR err, const char* error_string, &error_size);
+XXX_ERROR XXX_error_explain(XXX_ERROR err, char *error_string, int *error_size);
+
+// Additionally one has to define as in MPI a MAX_ERROR_STRING
+#define XXX_MAX_ERROR_STRING 512 /* implementation dependent */
 ```
 Error handling --- implementation defined.
 
