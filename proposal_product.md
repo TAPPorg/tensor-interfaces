@@ -1,5 +1,5 @@
-C := alpha A * B + beta C
-
+```c
+/// C := alpha A * B + beta C
 void product(
    type typeA, int RankA,  int[] ExtA,  int[] StrideA,  void *A,  int[]
 idxA,
@@ -10,8 +10,8 @@ idxC,
    type type_alpha, void *alpha,
    type type_beta,  void *beta,
    void *context,  void *INOUT
-)
-
+);
+```
 
 *NOTES*
 - all arrays are const, except from *C
@@ -20,7 +20,8 @@ idxC,
 - all int's are int64
 - aliasing?!
 
-
+refinement with explicit compute type
+```c
 void product_vPaul(
    type typeA, int RankA,  int[] ExtA,  int[] StrideA,  void *A,  int[]
 idxA,
@@ -32,5 +33,6 @@ idxC,
    type type_beta,  void *beta,
    compute_type type,
    const void *infoIN,  void *infoOUT
-)
+);
+```
 
