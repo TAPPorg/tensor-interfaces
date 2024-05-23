@@ -64,12 +64,27 @@ Implementation defined (and maybe some standard) attributes, loosely based on MP
 - The datatype of the $\alpha$ might be different than the one of the tensor A
   to allow for mixed precision algorithms, or complex-real products.
   
-- 
+- Example:
 ```C
   A["abcd"] = B["ab"] * C["cd"]
   int nmode_A = 4;
   XXX_entent idx_A[4] = {'a', 'b', 'c', 'd'};
 ```
+
+1. When `C` is `NULL`, the standard specifies that it should not do the sum.
+2. Allow for aliasing of `C` and `D` pointers **if** `idx_C` and `idx_D` are equal.
+3. Allow for `A` and `B` **at the same time** to be `NULL`, provided `C` is not `NULL`.
+   In this case, the operation should be interpreted as a scaling of `C`.
+   In particular, the transpose operation is also implementable like this.
+
+  Example:
+  ```C++
+  // Scaling
+  D["ijij"] = 2 * C["ijij"]
+
+  // transposition (C → D)
+  D["ij"] = C["ji"]
+  ```
 
 ```C
 // Unary and binary element-wise operations (transpose, scale, norm, reduction, etc.) should also be defined!
