@@ -45,24 +45,38 @@ Error handling --- implementation defined.
 typedef /* unspecified */ XXX_attr; // Requires initialization. E.g. "struct XXX_attr_internal*"
 typedef int32_t XXX_key; // Some values should be reserved for standardization
 
-XXX_error XXX_attr_init(XXX_attr* attr);
+XXX_ERROR XXX_attr_init(XXX_attr *attr);
 
-XXX_error XXX_attr_destroy(XXX_attr* attr);
+XXX_ERROR XXX_attr_destroy(XXX_attr *attr);
 
-XXX_error XXX_attr_set(XXX_attr* attr, XXX_key, void* value);
+XXX_ERROR XXX_attr_set(XXX_attr *attr, XXX_key key, void *value);
 
-XXX_error XXX_attr_get(XXX_attr* attr, XXX_key, void** value);
+XXX_ERROR XXX_attr_get(XXX_attr *attr, XXX_key key, void **value);
 
-XXX_error XXX_attr_clear(XXX_attr* attr, XXX_key);
+XXX_ERROR XXX_attr_clear(XXX_attr *attr, XXX_key key);
 ```
+
+
 Implementation defined (and maybe some standard) attributes, loosely based on MPI.
+
+## Contract operation
+
+- The datatype of the $\alpha$ might be different than the one of the tensor A
+  to allow for mixed precision algorithms, or complex-real products.
+  
+- 
+```C
+  A["abcd"] = B["ab"] * C["cd"]
+  int nmode_A = 4;
+  XXX_entent idx_A[4] = {'a', 'b', 'c', 'd'};
+```
 
 ```C
 // Unary and binary element-wise operations (transpose, scale, norm, reduction, etc.) should also be defined!
 
 // Compute D_{idx_D} = alpha * A_{idx_A} * B_{idx_B} + beta * C_{idx_C}
 
-XXX_error
+XXX_ERROR
 XXX_contract(const void*             alpha,
                    XXX_datatype      type_alpha,
              const void*             A,
