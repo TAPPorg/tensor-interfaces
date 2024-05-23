@@ -23,14 +23,18 @@ typedef enum
 
 ```
 
+
 ```C
-typedef /* unspecified */ XXX_error; // Should be a trivial type, e.g. "int"
+enum XXX_ERROR {
+  XXX_SUCCESS,
+  XXX_FAIL,
+  // ... more to come
+}
 
-int XXX_error_check(XXX_error err); // return non-zero on error
-
-const char* XXX_error_explain(XXX_error err);
-
-void XXX_error_clear(XXX_error err);
+// The error explain function should not allocate the error string itself
+// for security concerns.
+// Adapted from the function MPI_Error_string
+XXX_ERROR XXX_error_explain(XXX_ERROR err, const char* error_string, &error_size);
 ```
 Error handling --- implementation defined.
 
