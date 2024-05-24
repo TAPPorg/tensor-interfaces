@@ -62,9 +62,13 @@ typedef /* unspecified */ XXX_error; // Should be a trivial type, e.g. "int"
  * Should some other information be available, e.g. out-of-memory so user could try again later.
  */
 
-int XXX_check_success(XXX_error err); // return non-zero on success
+// The error explain function should not allocate the error string itself
+// for security concerns.
+// Adapted from the function MPI_Error_string
+XXX_ERROR XXX_error_explain(XXX_ERROR err, char *error_string, int *error_size);
 
-const char* XXX_error_explain(XXX_error err);
+// Additionally one has to define as in MPI a MAX_ERROR_STRING
+#define XXX_MAX_ERROR_STRING 512 /* implementation dependent */
 ```
 Error handling --- implementation defined.
 
