@@ -99,108 +99,33 @@ Implementation defined (and maybe some standard) attributes, loosely based on MP
 // Can this functionality be required in the interface without requiring JIT????
 
 // Compute D_{idx_D} = alpha * A_{idx_A} * B_{idx_B} + beta * C_{idx_C}
-
-XXX_error
-XXX_contract(const void*             alpha,
-                   XXX_datatype      type_alpha,
-             const void*             A,
-                   XXX_datatype      type_A,
-                   int               nmode_A,
-             const XXX_extent*       shape_A,
-             const XXX_stride*       stride_A,
-             const XXX_index*        idx_A,
-             const void*             B,
-                   XXX_datatype      type_B,
-                   int               nmode_B,
-             const XXX_extent*       shape_B,
-             const XXX_stride*       stride_B,
-             const XXX_index*        idx_B,
-             const void*             beta,
-                   XXX_datatype      type_beta,
-             const void*             C,
-                   XXX_datatype      type_C,
-                   int               nmode_C,
-             const XXX_extent*       shape_C,      
-             const XXX_stride*       stride_C,     
-             const XXX_index*        idx_C,
-                   void*             D,            // users should specify C twice for in-place 
-                   XXX_datatype      type_D,       // instead, could C or D be NULL?
-             const XXX_stride*       stride_D,     // if C == D, do we also need nmode_D, shape_D, etc.?
-                   XXX_comp_datatype comp_type,    // maybe XXX_IN_PLACE tag for C == D?
-                   XXX_attr          attr);
-
-// Compute D_{MNL} = alpha * \sum_K A_{MKL} B_{KNL} + beta * C_{MNL}
-
-XXX_error
-XXX_contract(      int               nmode_M,
-             const XXX_extent*       shape_M,
-                   int               nmode_N,
-             const XXX_extent*       shape_N,
-                   int               nmode_K,
-             const XXX_extent*       shape_K,
-                   int               nmode_L,
-             const XXX_extent*       shape_L,
-             const void*             alpha,
-                   XXX_datatype      type_alpha,
-             const void*             A,
-                   XXX_datatype      type_A,
-             const XXX_stride*       stride_A_M,
-             const XXX_stride*       stride_A_K,
-             const XXX_stride*       stride_A_L,
-             const void*             B,
-                   XXX_datatype      type_B,
-             const XXX_stride*       stride_B_K,
-             const XXX_stride*       stride_B_N,
-             const XXX_stride*       stride_B_L,
-             const void*             beta,
-                   XXX_datatype      type_beta,
-             const void*             C,
-                   XXX_datatype      type_C,
-             const XXX_stride*       stride_C_M,
-             const XXX_stride*       stride_C_N,
-             const XXX_stride*       stride_C_L,
-                   void*             D,            // users should specify C twice for in-place 
-                   XXX_datatype      type_D,       // instead, could C or D be NULL?
-             const XXX_stride*       stride_D_M,   // if C == D, do we also need nmode_D, shape_D, etc.?
-             const XXX_stride*       stride_D_N,   // maybe XXX_IN_PLACE tag for C == D?
-             const XXX_stride*       stride_D_L,
-                   XXX_comp_datatype type_comp,
-                   XXX_attr          attr);
-
-// Compute D_{MNL} = alpha * \sum_K A_{MKL} B_{KNL} + beta * C_{MNL}
 // Here, plan creation is a required part of the API
 
 typedef /* unspecified */ XXX_plan; // probably pointer to struct
 
 XXX_error
-XXX_contract_plan(      int               nmode_M,
-             const XXX_extent*       shape_M,
-                   int               nmode_N,
-             const XXX_extent*       shape_N,
-                   int               nmode_K,
-             const XXX_extent*       shape_K,
-                   int               nmode_L,
-             const XXX_extent*       shape_L,
+XXX_contract_plan(
                    XXX_datatype      type_alpha,
                    XXX_datatype      type_A,
-             const XXX_stride*       stride_A_M,
-             const XXX_stride*       stride_A_K,
-             const XXX_stride*       stride_A_L,
+                   int               nmode_A,
+             const XXX_extent*       shape_A,
+             const XXX_stride*       stride_A,
+             const XXX_index*        idx_A,
                    XXX_datatype      type_B,
-             const XXX_stride*       stride_B_K,
-             const XXX_stride*       stride_B_N,
-             const XXX_stride*       stride_B_L,
+                   int               nmode_B,
+             const XXX_extent*       shape_B,
+             const XXX_stride*       stride_B,
+             const XXX_index*        idx_B,
                    XXX_datatype      type_beta,
                    XXX_datatype      type_C,
-             const XXX_stride*       stride_C_M,
-             const XXX_stride*       stride_C_N,
-             const XXX_stride*       stride_C_L,   // users should specify C twice for in-place 
+                   int               nmode_C,
+             const XXX_extent*       shape_C,      
+             const XXX_stride*       stride_C,     
+             const XXX_index*        idx_C,        // users should specify C twice for in-place 
                    XXX_datatype      type_D,       // instead, could C or D be NULL?
-             const XXX_stride*       stride_D_M,   // if C == D, do we also need nmode_D, shape_D, etc.?
-             const XXX_stride*       stride_D_N,   // maybe XXX_IN_PLACE tag for C == D?
-             const XXX_stride*       stride_D_L,
+             const XXX_stride*       stride_D,     // if C == D, do we also need nmode_D, shape_D, etc.?
                    XXX_comp_datatype type_comp,
-                   XXX_plan*         plan,
+                   XXX_plan          plan,
                    XXX_attr          attr);
 
 XXX_error
