@@ -52,7 +52,7 @@ TAPP_error TAPP_create_tensor_product(TAPP_tensor_product* plan,
                                       const int64_t* idx_D,
                                       TAPP_prectype prec);
 
-TAPP_error TAPP_destory_tensor_product(TAPP_tensor_product plan);
+TAPP_error TAPP_destroy_tensor_product(TAPP_tensor_product plan);
 
 //TODO: in-place operation: set C = NULL or TAPP_IN_PLACE?
 
