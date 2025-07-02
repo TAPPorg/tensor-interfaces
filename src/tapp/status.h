@@ -13,6 +13,8 @@ typedef intptr_t TAPP_status;
  * TODO: how to get data out? using attributes or separate standardized interface? implementation-defined?
  */
 
-TAPP_error TAPP_destroy_status(TAPP_status status);
+#define TAPP_NO_STATUS NULL
+
+TAPP_error TAPP_destroy_status(TAPP_status* status);
 
 #endif /* TAPP_STATUS_H_ */

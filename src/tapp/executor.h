@@ -3,15 +3,14 @@
 
 #include <stdint.h>
 
+#include "attributes.h"
 #include "error.h"
+#include "handle.h"
 
 typedef intptr_t TAPP_executor;
 
-/*
- * TODO: implementation-defined creation of executors or "wrapper" to get all implementations and select one?
- *       devices probably can't be enumerated until you have a handle....
- */
+TAPP_error TAPP_create_executor(TAPP_handle handle, TAPP_attr attr);
 
-TAPP_error TAPP_destroy_executor(TAPP_executor exec);
+TAPP_error TAPP_destroy_executor(TAPP_executor* exec);
 
 #endif /* TAPP_HANDLE_H_ */
