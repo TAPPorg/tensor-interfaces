@@ -8,7 +8,11 @@
 typedef intptr_t TAPP_attr;
 typedef int TAPP_key;
 
-//TODO: predefined attributes? error conditions?
+#define TAPP_NO_ATTRIBUTES ((TAPP_attr)NULL)
+
+TAPP_error TAPP_create_attr(TAPP_attr* attr);
+
+TAPP_error TAPP_destroy_attr(TAPP_attr* attr);
 
 TAPP_error TAPP_attr_set(TAPP_attr attr, TAPP_key key, void* value);
 

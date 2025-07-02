@@ -26,10 +26,10 @@ enum
  * TODO: what are the required error conditions?
  *
  * TODO: must C and D info be the same? (should they just be the same variable?)
- *  JB: Can this be implemented efficiently with different data types of C and D? 
+ *  JB: Can this be implemented efficiently with different data types of C and D?
  *      Let’s say D is complex and C real. Then it should be possible with a different "stride".
- *      In such cases we might want to support different C and D info. If D info is null, they 
- *      are assumed identical. 
+ *      In such cases we might want to support different C and D info. If D info is null, they
+ *      are assumed identical.
  */
 
 typedef intptr_t TAPP_tensor_product;
@@ -52,7 +52,7 @@ TAPP_error TAPP_create_tensor_product(TAPP_tensor_product* plan,
                                       const int64_t* idx_D,
                                       TAPP_prectype prec);
 
-TAPP_error TAPP_destroy_tensor_product(TAPP_tensor_product plan);
+TAPP_error TAPP_destroy_tensor_product(TAPP_tensor_product* plan);
 
 //TODO: in-place operation: set C = NULL or TAPP_IN_PLACE?
 
