@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "error.h"
-#include "datatype.h"
+#include "tapp_error.h"
+#include "tapp_datatype.h"
 
 typedef intptr_t TAPP_tensor_info;
 

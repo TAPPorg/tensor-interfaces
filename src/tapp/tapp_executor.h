@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "error.h"
+#include "tapp_error.h"
 
 typedef intptr_t TAPP_executor;
 

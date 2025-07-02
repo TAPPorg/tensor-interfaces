@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 
-#include "error.h"
-#include "handle.h"
-#include "executor.h"
-#include "datatype.h"
-#include "status.h"
-#include "tensor.h"
+#include "tapp_error.h"
+#include "tapp_handle.h"
+#include "tapp_executor.h"
+#include "tapp_datatype.h"
+#include "tapp_status.h"
+#include "tapp_tensor.h"
 
 //TODO: where should this go?
 typedef int TAPP_element_op;
@@ -26,10 +26,10 @@ enum
  * TODO: what are the required error conditions?
  *
  * TODO: must C and D info be the same? (should they just be the same variable?)
- *  JB: Can this be implemented efficiently with different data types of C and D? 
+ *  JB: Can this be implemented efficiently with different data types of C and D?
  *      Let’s say D is complex and C real. Then it should be possible with a different "stride".
- *      In such cases we might want to support different C and D info. If D info is null, they 
- *      are assumed identical. 
+ *      In such cases we might want to support different C and D info. If D info is null, they
+ *      are assumed identical.
  */
 
 typedef intptr_t TAPP_tensor_product;
