@@ -21,22 +21,23 @@ typedef enum
     ...
 } XXX_datatype;
 
-typedef enum
-{
-    XXX_TYPE_F32_F32_ACCUM_F32 = XXX_TYPE_F32,
-    ...
-} XXX_comp_datatype;
 ```
-Enumerations for the supported storage and computational datatypes. Not all combinations are required to be supported.
+
 
 ```C
-typedef /* unspecified */ XXX_error; // Should be a trivial type, e.g. "int"
+enum XXX_ERROR {
+  XXX_SUCCESS,
+  XXX_FAIL,
+  // ... more to come
+}
 
-int XXX_error_check(XXX_error err); // return non-zero on error
+// The error explain function should not allocate the error string itself
+// for security concerns.
+// Adapted from the function MPI_Error_string
+XXX_ERROR XXX_error_explain(XXX_ERROR err, char *error_string, int *error_size);
 
-const char* XXX_error_explain(XXX_error err);
-
-void XXX_error_clear(XXX_error err);
+// Additionally one has to define as in MPI a MAX_ERROR_STRING
+#define XXX_MAX_ERROR_STRING 512 /* implementation dependent */
 ```
 Error handling --- implementation defined.
 
@@ -44,24 +45,53 @@ Error handling --- implementation defined.
 typedef /* unspecified */ XXX_attr; // Requires initialization. E.g. "struct XXX_attr_internal*"
 typedef int32_t XXX_key; // Some values should be reserved for standardization
 
-XXX_error XXX_attr_init(XXX_attr* attr);
+XXX_ERROR XXX_attr_init(XXX_attr *attr);
 
-XXX_error XXX_attr_destroy(XXX_attr* attr);
+XXX_ERROR XXX_attr_destroy(XXX_attr *attr);
 
-XXX_error XXX_attr_set(XXX_attr* attr, XXX_key, void* value);
+XXX_ERROR XXX_attr_set(XXX_attr *attr, XXX_key key, void *value);
 
-XXX_error XXX_attr_get(XXX_attr* attr, XXX_key, void** value);
+XXX_ERROR XXX_attr_get(XXX_attr *attr, XXX_key key, void **value);
 
-XXX_error XXX_attr_clear(XXX_attr* attr, XXX_key);
+XXX_ERROR XXX_attr_clear(XXX_attr *attr, XXX_key key);
 ```
+
+
 Implementation defined (and maybe some standard) attributes, loosely based on MPI.
+
+## Contract operation
+
+- The datatype of the $\alpha$ might be different than the one of the tensor A
+  to allow for mixed precision algorithms, or complex-real products.
+  
+- Example:
+```C
+  A["abcd"] = B["ab"] * C["cd"]
+  int nmode_A = 4;
+  XXX_entent idx_A[4] = {'a', 'b', 'c', 'd'};
+```
+
+1. When `C` is `NULL`, the standard specifies that it should not do the sum.
+2. Allow for aliasing of `C` and `D` pointers **if** `idx_C` and `idx_D` are equal.
+3. Allow for `A` and `B` **at the same time** to be `NULL`, provided `C` is not `NULL`.
+   In this case, the operation should be interpreted as a scaling of `C`.
+   In particular, the transpose operation is also implementable like this.
+
+  Example:
+  ```C++
+  // Scaling
+  D["ijij"] = 2 * C["ijij"]
+
+  // transposition (C → D)
+  D["ij"] = C["ji"]
+  ```
 
 ```C
 // Unary and binary element-wise operations (transpose, scale, norm, reduction, etc.) should also be defined!
 
 // Compute D_{idx_D} = alpha * A_{idx_A} * B_{idx_B} + beta * C_{idx_C}
 
-XXX_error
+XXX_ERROR
 XXX_contract(const void*             alpha,
                    XXX_datatype      type_alpha,
              const void*             A,
@@ -90,7 +120,7 @@ XXX_contract(const void*             alpha,
              const XXX_extent*       shape_D,
              const XXX_stride*       stride_D,
              const XXX_index*        idx_D,
-                   XXX_comp_datatype comp_type,
-                   XXX_attr          attr);
+                   XXX_datatype      comp_type,
+                   XXX_attr*         attr);
 ```
 
